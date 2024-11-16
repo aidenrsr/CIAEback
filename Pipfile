@@ -8,15 +8,13 @@ flask = "*"
 flask-restx = "*"
 flask-sqlalchemy = "*"
 flask-jwt-extended = "*"
-python-dotenv = "*"
+python-decouple = "*"
 flask-migrate = "*"
 colorama = "*"
 flask-cors = "*"
 gunicorn = "*"
-python-decouple = "*"
-decouple = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.13"
