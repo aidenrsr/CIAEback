@@ -1,0 +1,9 @@
+flask
+flask-restx
+flask-sqlalchemy
+flask-jwt-extended
+python-decouple
+flask-migrate
+colorama
+flask-cors
+gunicorn
