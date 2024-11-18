@@ -1,7 +1,5 @@
 from decouple import config
 
-BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-
 
 class Config:
     SECRET_KEY = config("SECRET_KEY")

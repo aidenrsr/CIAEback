@@ -1,5 +1,6 @@
 FROM python:3.9-slim
 
+<<<<<<< HEAD:backend/Dockerfile
 # Update package lists
 RUN apt-get -q -y update 
 
@@ -9,6 +10,8 @@ RUN apt-get install -y gcc
 # define enviroment variables and working directory
 # USERNAME 바꿔도 됨
 ENV USERNAME= ciae
+
+# Set working directory
 WORKDIR /app
 
 # Copy requirements file and install dependencies
@@ -40,12 +43,11 @@ install python packages
 
 RUN pip install --upgrade pip
 # install packages
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 # flask environment variable
 ENV FLASK_APP=ciae-main
 # make service entrypoint executable
 RUN chmod +x service_entrypoint.sh
-
 
 # Expose port (default for Flask)
 EXPOSE 5000
@@ -55,6 +57,9 @@ ENTRYPOINT [ "./service_entrypoint.sh" ]
 # # Set environment variables for Flask
 # ENV FLASK_APP=main.py
 # ENV FLASK_RUN_HOST=0.0.0.0
+# Set environment variables for Flask
+ENV FLASK_APP=backend/main.py
+ENV FLASK_RUN_HOST=0.0.0.0
 
 # # Run the Flask app
 # CMD ["flask", "run"]

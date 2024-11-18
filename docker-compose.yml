@@ -18,10 +18,9 @@ services:
     env_file:
       - .db.env
     environment:
-      POSTGRES_USER: sungrohRyu
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: ciae
-      POSTGRES_HOST: db
+      POSTGRES_DB: development
       POSTGRES_PORT: 5432
     volumes:
       - ./pData:/var/lib/postgresql/data
