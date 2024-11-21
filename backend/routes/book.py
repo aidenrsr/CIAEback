@@ -5,7 +5,7 @@ from models import Book, Chapter, Page, UserBookInteraction
 from ext import db
 
 
-books = Namespace("books")
+books = Namespace("books", description="A namespace for books")
 
 # book_model = books.model(
 #     "Book",

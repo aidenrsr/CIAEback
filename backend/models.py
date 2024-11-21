@@ -268,9 +268,3 @@ class UserBookInteraction(db.Model):
         db.session.commit()
 
 
-class Thread(db.Model):
-    """
-    class Thread:
-     - id:Integer (Primary Key)
-     - creater_id
-    """

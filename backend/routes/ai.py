@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 from models import UserBookInteraction, Chapter
 import openai
+import os
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_KEY")

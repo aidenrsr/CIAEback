@@ -10,8 +10,8 @@ from models import User, Book, Chapter, Page, UserBookInteraction, UserPoint, Us
 
 from auth import auth_ns
 from routes.ai import ai_ns
-from routes.book import book_ns
-from routes.community import community
+from routes.book import books
+# from routes.community import community
 from routes.user import user
 
 
@@ -25,8 +25,8 @@ api = Api(app, doc='/docs')
 JWTManager(app)
 api.add_namespace(auth_ns)
 api.add_namespace(ai_ns)
-api.add_namespace(book_ns)
-api.add_namespace(community)
+api.add_namespace(books)
+# api.add_namespace(community)
 api.add_namespace(user)
 
 @app.route("/")
@@ -41,6 +41,7 @@ def not_found(err):
 @app.shell_context_processor
 def make_shell_context():
     return {
+        "User": User,
         "db": db,
         "Book": Book,
         "Chapter": Chapter,

@@ -13,8 +13,8 @@ flask-migrate = "*"
 colorama = "*"
 flask-cors = "*"
 gunicorn = "*"
-python-dotenv = "*"
 psycopg2 = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
