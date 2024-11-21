@@ -91,5 +91,5 @@ class CommentsResource(Resource):
         return jsonify({"comment successfully saved"})
 
 
-@community.route("/posts/<int:post_id>/comments")
-class LikeResource(Resource):
+# @community.route("/posts/<int:post_id>/comments")
+# class LikeResource(Resource):

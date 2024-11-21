@@ -15,7 +15,6 @@ EXPOSE 5000
 
 # Set environment variables (optional)
 ENV FLASK_ENV=production
-ENV FLASK_APP=app.py  # Adjust if your main Flask file has a different name
-
+ENV FLASK_APP=app/main.py
 # Command to run the Flask application
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
