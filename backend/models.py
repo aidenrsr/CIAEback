@@ -20,7 +20,6 @@ class User(db.Model):
 
     points = db.relationship("UserPoint", back_populates="user", cascade="all, delete-orphan")
     performance = db.relationship("UserPerformance", back_populates="user", cascade="all, delete-orphan")
-    book_interactions = db.relationship("UserBookInteraction", back_populates="user")
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -97,7 +96,6 @@ class Book(db.Model):
     - book_id: Integer (Primary Key)
     - title: String
     - author: String
-    - book length: Integer
     - date_added: Date
     """
 
@@ -106,12 +104,10 @@ class Book(db.Model):
     book_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False)
     author = db.Column(db.String(), nullable=False)
-    length = db.Column(db.Integer, nullable=False)
     date_added = db.Column(db.Date(), default=db.func.current_date())
 
     # Relationship with chapters
     chapters = db.relationship("Chapter", back_populates="book", cascade="all, delete-orphan")
-    user_interactions = db.relationship("UserBookInteraction", back_populates="book")
 
     def __repr__(self):
         return f"<Book {self.title} by {self.author}>"
@@ -136,8 +132,6 @@ class Chapter(db.Model):
     - book_id: Integer (Foreign Key)
     - title: String
     - chapter_number: Integer
-    - start page: Integer
-    - end page: Integer
     """
 
     __tablename__ = "chapters"
@@ -146,8 +140,6 @@ class Chapter(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
     title = db.Column(db.String(), nullable=False)
     chapter_number = db.Column(db.Integer, nullable=False)
-    start_page = db.Column(db.Integer, nullable=False)
-    end_page = db.Column(db.Integer, nullable=False)
 
     # Relationship with book
     book = db.relationship("Book", back_populates="chapters")
@@ -178,7 +170,6 @@ class Page(db.Model):
     - chapter_id: Integer (Foreign Key)
     - page_number: Integer
     - content: String
-    - Path to pdf: String
     """
 
     __tablename__ = "pages"
@@ -187,7 +178,6 @@ class Page(db.Model):
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"), nullable=False)
     page_number = db.Column(db.Integer, nullable=False)
     content = db.Column(db.Text, nullable=False)
-    path = db.Column(db.Text, nullable=False)
 
     # Relationship with chapter
     chapter = db.relationship("Chapter", back_populates="pages")
@@ -266,46 +256,5 @@ class Thread(db.Model):
     """
     class Thread:
      - id:Integer (Primary Key)
-     - title:String
-     - book_id:Integer (Foreign Key)
+     - creater_id
     """
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=True)  # Optional
-
-    def __repr__(self):
-        return f"Thread {self.title}"
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-class Post(db.Model):
-    """
-    class Post:
-     - id:Integer (Primary Key)
-     - thread_id:Integer (Foreign Key)
-     - creator_id:Integer (Foregin Key)
-     - title:String
-     - content:Text
-     - create_time:datetime
-    """
-
-
-class Comment(db.Model):
-    """
-    class Comment:
-     - id:Integer (Primary Key)
-     - post_id:Integer (Foreign Key)
-     - creator_id:Integer (Foregin Key)
-     - title:String
-     - content:Text
-     - create_time:datetime
-    """
-
-
