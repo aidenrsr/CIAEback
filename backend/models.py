@@ -262,9 +262,9 @@ class UserBookInteraction(db.Model):
         db.session.commit()
 
 
-class Tread(db.Model):
+class Thread(db.Model):
     """
-    class Tread:
+    class Thread:
      - id:Integer (Primary Key)
      - title:String
      - book_id:Integer (Foreign Key)

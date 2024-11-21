@@ -1,61 +1,95 @@
+from flask import request, jsonify
+from flask_restx import Namespace, Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from models import Thread, Post, Comment, User
+from ext import db
 
+community = Namespace("community")
 
-messages_ns = Namespace("messages")
-message_model = messages_ns.model(
-    "Message",
-    {
-        "message_id": fields.Integer(),
-        "username": fields.String(),
-        "text": fields.String(),
-        "timestamp": fields.DateTime(),
-    },
-)
-
-
-
-@messages_ns.route("/messages")
-class MessagesResource(Resource):
-    @messages_ns.marshal_list_with(message_model)
+# thread
+@community.route("/threads")
+class ThreadsResource(Resource):
     def get(self):
-        chat = Message.query.order_by(Message.timestamp.asc()).all()
-        return chat
+        threads = Thread.query.all()
+        return jsonify([
+            {
+                "id": c.id,
+                "title": c.title
+            } 
+            for c in threads]), 200
 
-    @messages_ns.expect(message_model)
-    @messages_ns.marshal_with(message_model)
     @jwt_required()
+    # just to add new thread for new book
     def post(self):
-        # get the user id from JWT
-        user_id = get_jwt_identity()
-        # fetch the user from the database
-        user = User.query.get_or_404(user_id)
-        # get the message text from the request body
         data = request.get_json()
-        text = data.get('text', '').strip()
-        if not text:
-            return {'Message cannot be empty'}, 400
-        # create and save the message
-        message = Message(username = user.username, text = text)
-        db.session.add(message)
-        db.session.commit()
+        title = data.get("title", "").strip()
+        book_id = data.get("book_id")
+        if not title:
+            return jsonify({"error": "title empty"}), 400
+        thread = Thread(title=title, book_id=book_id)
+        thread.save()
 
-        return {'Message sent'}, 201
 
-@messages_ns.route("/messages/<int:message_id>")
-class MessageResource(Resource):
-    @messages_ns.marshal_with(message_model)
-    def get(self, message_id):
-        message = Message.query.get_or_404(message_id)
-        return message
+# Post
+@community.route("/threads/<int:thread_id>/posts")
+class PostsResource(Resource):
+    def get(self, thread_id):
+        posts = Post.query.filter_by(thread_id=thread_id).order_by(Post.created_at.desc()).all()
+        return jsonify([
+            {
+                "post_id": p.id,
+                "thread_id": p.thread_id,
+                "title": p.title,
+                "content": p.content,
+                "username": p.username,
+                "created_at": p.created_at
+            }
+            for p in posts]), 200
 
     @jwt_required()
-    def delete(self, message_id):
+    def post(self, thread_id):
         user_id = get_jwt_identity()
         user = User.query.get_or_404(user_id)
-        message_to_delete = Message.query.get_or_404(message_id)
-        # check if user and message writer match
-        if user.username != message_to_delete.username:
-            return {"error"}, 403
-        
-        db.session.delete(message_to_delete)
-        db.session.commit()
-        return {"Message deleted"}, 200
+
+        data = request.get_json()
+        title = data.get("title", "").strip()
+        content = data.get("content", "").strip()
+        if not title or not content:
+            return jsonify({"error": "empty"}), 400
+
+        new_post = Post(thread_id=thread_id, title=title, content=content, username=user.username)
+        new_post.save()
+        return jsonify({"post successfully saved"})
+
+
+# Endpoints for Comments on a Post
+@community.route("/posts/<int:post_id>/comments")
+class CommentsResource(Resource):
+    def get(self, post_id):
+        comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.created_at.desc()).all()
+        return jsonify([
+            {
+                "comment_id": c.id,
+                "post_id": c.post_id,
+                "username": c.username,
+                "content": c.content,
+                "created_at": c.created_at
+            } for c in comments]), 200
+
+    @jwt_required()
+    def post(self, post_id):
+        user_id = get_jwt_identity()
+        user = User.query.get_or_404(user_id)
+
+        data = request.get_json()
+        content = data.get("content", "").strip()
+        if not content:
+            return jsonify({"error": "empty"}), 400
+
+        new_comment = Comment(post_id=post_id, content=content, username=user.username)
+        new_comment.save()
+        return jsonify({"comment successfully saved"})
+
+
+@community.route("/posts/<int:post_id>/comments")
+class LikeResource(Resource):
