@@ -62,8 +62,8 @@ class Login(Resource):
 
         if db_user and check_password_hash(db_user.password, password):
 
-            access_token = create_access_token(identity=db_user.username)
-            refresh_token = create_refresh_token(identity=db_user.username)
+            access_token = create_access_token(identity=db_user.id)
+            refresh_token = create_refresh_token(identity=db_user.id)
 
             return jsonify(
                 {"access_token": access_token, "refresh_token": refresh_token}
@@ -71,6 +71,7 @@ class Login(Resource):
 
         else:
             return jsonify({"message": "Invalid username or password"})
+
 
 @auth_ns.route("/refresh")
 class RefreshResource(Resource):

@@ -24,10 +24,12 @@ class User(db.Model):
     def __repr__(self):
         return f"<User {self.username}>"
 
+    @classmethod
     def get_points(self):
         """ return points the user has """
         return self.points
 
+    @classmethod
     def get_performance(self):
         """ retuns user performance score """
         return self.performance
@@ -112,6 +114,7 @@ class Book(db.Model):
     def __repr__(self):
         return f"<Book {self.title} by {self.author}>"
 
+    @classmethod
     def get_chapters(self):
         """ returns all chapters of the book """
         return self.chapters
@@ -132,6 +135,7 @@ class Chapter(db.Model):
     - book_id: Integer (Foreign Key)
     - title: String
     - chapter_number: Integer
+    - content: text
     """
 
     __tablename__ = "chapters"
@@ -140,6 +144,7 @@ class Chapter(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
     title = db.Column(db.String(), nullable=False)
     chapter_number = db.Column(db.Integer, nullable=False)
+    content = db.Column(db.Text, nullable=False)
 
     # Relationship with book
     book = db.relationship("Book", back_populates="chapters")
@@ -150,6 +155,7 @@ class Chapter(db.Model):
     def __repr__(self):
         return f"<Chapter {self.chapter_number}: {self.title} of Book {self.book_id}>"
 
+    @classmethod
     def getpages(self):
         """ returns all pages of the chapter """
         return self.pages
@@ -242,6 +248,12 @@ class UserBookInteraction(db.Model):
         """
         interaction = cls.query.filter_by(user_id=user_id, book_id=book_id).first()
         return interaction.progress if interaction else None
+
+    def update(self, newScore1, newScore2, newScore3):
+        num_chapter = (self.book).get_chapters().scalar()
+        self.score1 = (progress*num_chapter*self.score1+newScore1)/(progress*num_chapter+1)
+        self.score2 = (progress*num_chapter*self.score2+newScore2)/(progress*num_chapter+1)
+        self.score3 = (progress*num_chapter*self.score3+newScore3)/(progress*num_chapter+1)
 
     def save(self):
         db.session.add(self)

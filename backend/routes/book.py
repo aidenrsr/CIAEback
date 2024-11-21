@@ -7,6 +7,11 @@ from ext import db
 
 books = Namespace("books")
 
+# book_model = books.model(
+#     "Book",
+#     {"book_id": fields.Integer(), "book_name": fields.}
+# )
+
 @books.route("/books")
 class BookListResource(Resource):
     def get(self):  # all books
