@@ -20,6 +20,8 @@ class User(db.Model):
 
     points = db.relationship("UserPoint", back_populates="user", cascade="all, delete-orphan")
     performance = db.relationship("UserPerformance", back_populates="user", cascade="all, delete-orphan")
+    book_interactions = db.relationship("UserBookInteraction", back_populates="user")
+
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -110,6 +112,8 @@ class Book(db.Model):
 
     # Relationship with chapters
     chapters = db.relationship("Chapter", back_populates="book", cascade="all, delete-orphan")
+    user_interactions = db.relationship("UserBookInteraction", back_populates="book")
+
 
     def __repr__(self):
         return f"<Book {self.title} by {self.author}>"
