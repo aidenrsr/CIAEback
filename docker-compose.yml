@@ -1,37 +1,28 @@
-version: "3.8"
+version: '3.9'
 
 services:
-  web:
+  flask-app:
     build: .
     ports:
-      - "5001:5000"
-    environment:
-      - FLASK_ENV=backend/main.py
-    depends_on:
-      - db:
-        condition: service_healthy
-    command: ["python", "main.py"]
-
-  db:
-    image: postgres:13
-    container_name: db
-    env_file:
-      - .db.env
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: development
-      POSTGRES_PORT: 5432
+      - "5000:5000"
     volumes:
-      - ./pData:/var/lib/postgresql/data
+      - .:/app
+    environment:
+      FLASK_ENV: development  # Change to production for production mode
+    depends_on:
+      - database
 
-main:
-  contaier_name: ciae-main
-  build:
-    context: .
-    dockerfile: Dockerfile
-  depends_on:
-    db:
-      condition: service_healthy
-    links:
-      - db
+  database:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: flaskuser
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: flaskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

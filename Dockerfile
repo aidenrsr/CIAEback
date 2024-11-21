@@ -1,41 +1,21 @@
+# Use the official Python image
 FROM python:3.9-slim
 
-# Update package lists
-RUN apt-get -q -y update 
+# Set the working directory inside the container
+WORKDIR /app
 
-# Install GCC for compiling Python packages with native extensions
-RUN apt-get install -y gcc
+# Copy application files to the working directory
+COPY . /app
 
-# define enviroment variables and working directory
-
-# Set working directory
-WORKDIR /backend
-
-# Copy requirements file and install dependencies
-# application code directory
-COPY ciae-main ciae-main
-COPY requirements.txt .
-COPY service_entrypoint.sh .
-
-RUN pip install --upgrade pip
-# install packages
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-# flask environment variable
-ENV FLASK_APP=ciae-main
-# make service entrypoint executable
-RUN chmod +x service_entrypoint.sh
 
-# Expose port (default for Flask)
+# Expose the port your Flask app runs on
 EXPOSE 5000
-RUN flask db init
 
-ENTRYPOINT [ "./service_entrypoint.sh" ]
-# # Set environment variables for Flask
-# ENV FLASK_APP=main.py
-# ENV FLASK_RUN_HOST=0.0.0.0
-# Set environment variables for Flask
-ENV FLASK_APP=backend/main.py
-ENV FLASK_RUN_HOST=0.0.0.0
+# Set environment variables (optional)
+ENV FLASK_ENV=production
+ENV FLASK_APP=app.py  # Adjust if your main Flask file has a different name
 
-# # Run the Flask app
-# CMD ["flask", "run"]
+# Command to run the Flask application
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
