@@ -1,6 +1,5 @@
 FROM python:3.9-slim
 
-<<<<<<< HEAD:backend/Dockerfile
 # Update package lists
 RUN apt-get -q -y update 
 
@@ -8,38 +7,15 @@ RUN apt-get -q -y update
 RUN apt-get install -y gcc
 
 # define enviroment variables and working directory
-# USERNAME 바꿔도 됨
-ENV USERNAME= ciae
 
 # Set working directory
-WORKDIR /app
+WORKDIR /backend
 
 # Copy requirements file and install dependencies
 # application code directory
 COPY ciae-main ciae-main
 COPY requirements.txt .
 COPY service_entrypoint.sh .
-
-'''
-create the container user
-(with the username we defined before)
-and gives it the needed permissions
-'''
-
-# create a new user and group
-RUN groupadd ${USERNAME} && useradd -g ${USERNAME} ${USERNAME}
-# change ownership of the working directory
-RUN chown -R ${USERNAME}:${USERNAME} /app
-# set permissions for the working directory
-RUN chmod -R u=rwx,g=rwx /app
-# switch to user
-USER ${USERNAME}
-# update path for pip installations
-ENV PATH "$PATH:/home/${USERNAME}/.local/bin"
-
-'''
-install python packages
-'''
 
 RUN pip install --upgrade pip
 # install packages
