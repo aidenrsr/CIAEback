@@ -17,6 +17,7 @@ from backend.routes.user import user
 
 app = Flask(__name__)
 app.config.from_object(DevConfig)
+CORS(app)
 
 db.init_app(app)
 
