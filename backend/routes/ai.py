@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from dotenv import load_dotenv
-from models import UserBookInteraction, Chapter
+from backend.models import UserBookInteraction, Chapter
 import openai
 import os
 

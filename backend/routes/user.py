@@ -2,8 +2,8 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import User, UserPerformance, UserPoint
-from ext import db
+from backend.models import User, UserPerformance, UserPoint
+from backend.ext import db
 
 user = Namespace("user")
 

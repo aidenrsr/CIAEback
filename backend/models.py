@@ -1,4 +1,4 @@
-from main import db
+from backend.ext import db
 
 
 class User(db.Model):
@@ -100,6 +100,7 @@ class Book(db.Model):
     - book_id: Integer (Primary Key)
     - title: String
     - author: String
+    - num_pages: Integer
     - date_added: Date
     """
 
@@ -108,6 +109,7 @@ class Book(db.Model):
     book_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False)
     author = db.Column(db.String(), nullable=False)
+    num_pages = db.Column(db.Integer(), nullable=False)
     date_added = db.Column(db.Date(), default=db.func.current_date())
 
     # Relationship with chapters
@@ -139,6 +141,8 @@ class Chapter(db.Model):
     - book_id: Integer (Foreign Key)
     - title: String
     - chapter_number: Integer
+    - start_page: Integer
+    - end_page: Integer
     - content: text
     """
 
@@ -148,6 +152,8 @@ class Chapter(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
     title = db.Column(db.String(), nullable=False)
     chapter_number = db.Column(db.Integer, nullable=False)
+    start_page = db.Column(db.Integer, nullable=False)
+    end_page = db.Column(db.Integer, nullable=False)
     content = db.Column(db.Text, nullable=False)
 
     # Relationship with book
@@ -179,6 +185,7 @@ class Page(db.Model):
     - page_id: Integer (Primary Key)
     - chapter_id: Integer (Foreign Key)
     - page_number: Integer
+    - path_to_pdf: String
     - content: String
     """
 
@@ -187,6 +194,7 @@ class Page(db.Model):
     page_id = db.Column(db.Integer, primary_key=True)
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"), nullable=False)
     page_number = db.Column(db.Integer, nullable=False)
+    path_to_pdf = db.Column(db.String(80), nullable=False)
     content = db.Column(db.Text, nullable=False)
 
     # Relationship with chapter

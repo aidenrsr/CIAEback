@@ -4,15 +4,15 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from config import DevConfig
-from ext import db
-from models import User, Book, Chapter, Page, UserBookInteraction, UserPoint, UserPerformance, Page
+from backend.config import DevConfig
+from backend.ext import db
+from backend.models import User, Book, Chapter, Page, UserBookInteraction, UserPoint, UserPerformance, Page
 
-from auth import auth_ns
-from routes.ai import ai_ns
-from routes.book import books
+from backend.auth import auth_ns
+from backend.routes.ai import ai_ns
+from backend.routes.book import books
 # from routes.community import community
-from routes.user import user
+from backend.routes.user import user
 
 
 app = Flask(__name__)

@@ -1,5 +1,5 @@
 from flask_restx import Resource, Namespace, fields
-from models import User
+from backend.models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import (
     JWTManager,

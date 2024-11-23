@@ -1,8 +1,8 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import Book, Chapter, Page, UserBookInteraction
-from ext import db
+from backend.models import Book, Chapter, Page, UserBookInteraction
+from backend.ext import db
 
 
 books = Namespace("books", description="A namespace for books")

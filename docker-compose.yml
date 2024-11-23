@@ -4,11 +4,12 @@ services:
   flask-app:
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       - .:/app
     environment:
       FLASK_ENV: development  # Change to production for production mode
+      FLASK_APP: backend.main.py
     depends_on:
       - database
 
@@ -16,9 +17,9 @@ services:
     image: postgres:15
     container_name: postgres-db
     environment:
-      POSTGRES_USER: flaskuser
-      POSTGRES_PASSWORD: securepassword
-      POSTGRES_DB: flaskdb
+      POSTGRES_USER: development
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: development
     ports:
       - "5432:5432"
     volumes:
