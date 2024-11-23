@@ -12,7 +12,7 @@ class User(db.Model):
 
     __tablename__ = "user"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(25), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.Text(), nullable=True)
@@ -27,14 +27,14 @@ class User(db.Model):
         return f"<User {self.username}>"
 
     @classmethod
-    def get_points(self):
+    def get_points(cls):
         """ return points the user has """
-        return self.points
+        return cls.points
 
     @classmethod
-    def get_performance(self):
+    def get_performance(cls):
         """ retuns user performance score """
-        return self.performance
+        return cls.performance
 
     def save(self):
         db.session.add(self)
@@ -101,29 +101,26 @@ class Book(db.Model):
     - title: String
     - author: String
     - num_pages: Integer
-    - date_added: Date
     """
 
     __tablename__ = "books"
 
-    book_id = db.Column(db.Integer, primary_key=True)
+    book_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(), nullable=False)
     author = db.Column(db.String(), nullable=False)
     num_pages = db.Column(db.Integer(), nullable=False)
-    date_added = db.Column(db.Date(), default=db.func.current_date())
 
     # Relationship with chapters
     chapters = db.relationship("Chapter", back_populates="book", cascade="all, delete-orphan")
     user_interactions = db.relationship("UserBookInteraction", back_populates="book")
 
-
     def __repr__(self):
         return f"<Book {self.title} by {self.author}>"
 
     @classmethod
-    def get_chapters(self):
+    def get_chapters(cls):
         """ returns all chapters of the book """
-        return self.chapters
+        return cls.chapters
 
     def save(self):
         db.session.add(self)
@@ -139,7 +136,6 @@ class Chapter(db.Model):
     Chapter Model:
     - chapter_id: Integer (Primary Key)
     - book_id: Integer (Foreign Key)
-    - title: String
     - chapter_number: Integer
     - start_page: Integer
     - end_page: Integer
@@ -148,9 +144,8 @@ class Chapter(db.Model):
 
     __tablename__ = "chapters"
 
-    chapter_id = db.Column(db.Integer, primary_key=True)
+    chapter_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
-    title = db.Column(db.String(), nullable=False)
     chapter_number = db.Column(db.Integer, nullable=False)
     start_page = db.Column(db.Integer, nullable=False)
     end_page = db.Column(db.Integer, nullable=False)
@@ -163,12 +158,12 @@ class Chapter(db.Model):
     pages = db.relationship("Page", back_populates="chapter", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<Chapter {self.chapter_number}: {self.title} of Book {self.book_id}>"
+        return f"<Chapter {self.chapter_number} of Book {self.book_id}>"
 
     @classmethod
-    def getpages(self):
+    def getpages(cls):
         """ returns all pages of the chapter """
-        return self.pages
+        return cls.pages
 
     def save(self):
         db.session.add(self)
@@ -186,16 +181,14 @@ class Page(db.Model):
     - chapter_id: Integer (Foreign Key)
     - page_number: Integer
     - path_to_pdf: String
-    - content: String
     """
 
     __tablename__ = "pages"
 
-    page_id = db.Column(db.Integer, primary_key=True)
+    page_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"), nullable=False)
     page_number = db.Column(db.Integer, nullable=False)
     path_to_pdf = db.Column(db.String(80), nullable=False)
-    content = db.Column(db.Text, nullable=False)
 
     # Relationship with chapter
     chapter = db.relationship("Chapter", back_populates="pages")
@@ -226,14 +219,13 @@ class UserBookInteraction(db.Model):
 
     __tablename__ = "userbookinteractions"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
     progress = db.Column(db.Float, nullable=False, default=0.0)
-    last_interaction = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
-    score1 = db.Column(db.Integer, nullable=False)
-    score2 = db.Column(db.Integer, nullable=False)
-    score3 = db.Column(db.Integer, nullable=False)
+    score1 = db.Column(db.Integer, nullable=False, defualt=0)
+    score2 = db.Column(db.Integer, nullable=False, default=0)
+    score3 = db.Column(db.Integer, nullable=False, default=0)
 
     user = db.relationship("User", back_populates="book_interactions")
     book = db.relationship("Book", back_populates="user_interactions")
@@ -263,9 +255,10 @@ class UserBookInteraction(db.Model):
 
     def update(self, newScore1, newScore2, newScore3):
         num_chapter = (self.book).get_chapters().scalar()
-        self.score1 = (progress*num_chapter*self.score1+newScore1)/(progress*num_chapter+1)
-        self.score2 = (progress*num_chapter*self.score2+newScore2)/(progress*num_chapter+1)
-        self.score3 = (progress*num_chapter*self.score3+newScore3)/(progress*num_chapter+1)
+        self.score1 = (self.progress*num_chapter*self.score1+newScore1)/(self.progress*num_chapter+1)
+        self.score2 = (self.progress*num_chapter*self.score2+newScore2)/(self.progress*num_chapter+1)
+        self.score3 = (self.progress*num_chapter*self.score3+newScore3)/(self.progress*num_chapter+1)
+        self.progress += 1/num_chapter
 
     def save(self):
         db.session.add(self)
