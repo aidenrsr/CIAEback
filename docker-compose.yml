@@ -4,7 +4,7 @@ services:
   flask-app:
     build: .
     ports:
-      - "5001:5000"
+      - "8080:8080"
     volumes:
       - .:/app
     environment:
