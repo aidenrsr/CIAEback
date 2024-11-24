@@ -269,3 +269,83 @@ class UserBookInteraction(db.Model):
         db.session.commit()
 
 
+class Thread(db.Model):
+    """
+    Thread Model
+    """
+    __tablename__ = "threads"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text, nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=True)  # Optional link to a book
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    posts = db.relationship("Post", back_populates="thread")
+
+    def __repr__(self):
+        return f"<Thread {self.title}>"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+
+class Post(db.Model):
+    """
+    Post Model
+    """
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    thread_id = db.Column(db.Integer, db.ForeignKey("threads.id"), nullable=False)
+    title = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    username = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    thread = db.relationship("Thread", back_populates="posts")
+    comments = db.relationship("Comment", back_populates="post")
+
+    def __repr__(self):
+        return f"<Post {self.title}>"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class Comment(db.Model):
+    """
+    Comment Model:
+    """
+
+    __tablename__ = "comments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+    username = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+
+    post = db.relationship("Post", back_populates="comments")
+
+    def __repr__(self):
+        return f"<Comment {self.content}>"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
