@@ -142,7 +142,12 @@ class Chapter1Resource(Resource):
         new_response = Responses(response=data.get("response"))
         new_response.save()
 
-        return jsonify({question})
+        result = [
+            {
+                "question": question
+            }
+        ]
+        return jsonify(result)
 
 @tempai_ns.route("/Question/Chapter2")
 class Chapter2Resource(Resource):
@@ -158,7 +163,12 @@ class Chapter2Resource(Resource):
         new_response = Responses(response=data.get("response"))
         new_response.save()
 
-        return jsonify({question})
+        result = [
+            {
+                "question": question
+            }
+        ]
+        return jsonify(result)
 
 @tempai_ns.route("/Question/Init1")
 class Chapter1InitResource(Resource):
