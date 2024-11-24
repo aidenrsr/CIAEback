@@ -100,7 +100,6 @@ class GradeResponse(Resource):
                 "IdentificationScore": response_grade[0],
                 "CatharsisScore": response_grade[1],
                 "InsightScore": response_grade[2],
-
             }
         ]
 

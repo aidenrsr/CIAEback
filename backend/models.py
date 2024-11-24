@@ -21,7 +21,7 @@ class User(db.Model):
     points = db.relationship("UserPoint", back_populates="user", cascade="all, delete-orphan")
     performance = db.relationship("UserPerformance", back_populates="user", cascade="all, delete-orphan")
     book_interactions = db.relationship("UserBookInteraction", back_populates="user")
-
+    game_scores = db.relationship("GameScore", back_populates="user")
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -341,6 +341,27 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"<Comment {self.content}>"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class GameScore(db.Model):
+
+    __tablename_= "game_scores"
+
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+
+    user = db.relationship("User", back_populates="game_scores")
+
+    def __repr__(self):
+        return f"<GameScore User {self.user_id}, Score {self.score}>"
 
     def save(self):
         db.session.add(self)
