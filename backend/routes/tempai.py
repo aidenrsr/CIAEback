@@ -159,12 +159,11 @@ class Chapter1Resource(Resource):
 """
         new_question = question(chapter_content)
 
-        # Serialize `TextBlock` if necessary
-        serialized_question = (
-            new_question.to_dict()
-            if hasattr(new_question, "to_dict")
-            else str(new_question)
-        )
+        # Extract the "text" field if it's a dictionary
+        if isinstance(new_question, dict) and "text" in new_question:
+            serialized_question = new_question["text"]
+        else:
+            serialized_question = str(new_question)  # Fallback to string conversion
 
         result = [{"question": serialized_question}]
         return jsonify(result)
@@ -180,12 +179,11 @@ class Chapter2Resource(Resource):
 집에 돌아온 로운은 엄마에게 반장 선거에 나가겠다고 했지만, 엄마마저 비웃으며 "망신만 당할 거 아니냐"고 말해 상처를 받았다. 방으로 들어가 문을 쾅 닫은 로운은 초콜릿을 꺼내 먹으며 억울한 마음과 좌절을 달래려 했다. 초콜릿의 달콤함은 짧은 위로를 주었지만, 로운은 학교에서도 집에서도 자신을 이해해 주는 사람이 없다는 외로움 속에서 하루를 마무리했다."""
         new_question = question(chapter_content)
 
-        # Serialize `TextBlock` if necessary
-        serialized_question = (
-            new_question.to_dict()
-            if hasattr(new_question, "to_dict")
-            else str(new_question)
-        )
+        # Extract the "text" field if it's a dictionary
+        if isinstance(new_question, dict) and "text" in new_question:
+            serialized_question = new_question["text"]
+        else:
+            serialized_question = str(new_question)  # Fallback to string conversion
 
         result = [{"question": serialized_question}]
         return jsonify(result)
