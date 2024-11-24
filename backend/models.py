@@ -8,6 +8,8 @@ class User(db.Model):
     - username: String (Unique)
     - email: String
     - password: String
+    - points: Integer
+    - created_at: Date
     """
 
     __tablename__ = "user"
@@ -15,21 +17,16 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(25), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
-    password = db.Column(db.Text(), nullable=True)
+    password = db.Column(db.Text(), nullable=False)
+    points = db.Column(db.Integer(), nullable=False, default=0)
     created_at = db.Column(db.DateTime(), default=db.func.current_timestamp())
 
-    points = db.relationship("UserPoint", back_populates="user", cascade="all, delete-orphan")
     performance = db.relationship("UserPerformance", back_populates="user", cascade="all, delete-orphan")
     book_interactions = db.relationship("UserBookInteraction", back_populates="user")
 
 
     def __repr__(self):
         return f"<User {self.username}>"
-
-    @classmethod
-    def get_points(cls):
-        """ return points the user has """
-        return cls.points
 
     @classmethod
     def get_performance(cls):
@@ -60,30 +57,6 @@ class UserPerformance(db.Model):
     score1 = db.Column(db.Integer, nullable=False)
     score2 = db.Column(db.Integer, nullable=False)
     score3 = db.Column(db.Integer, nullable=False)
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class UserPoint(db.Model):
-    """
-    UserPoint Model:
-    - user_id: Integer (Foreign Key)
-    - points: Integer
-    """
-
-    __tablename__ = "userpoints"
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    points = db.Column(db.Integer, nullable=False)
-
-    def __repr__(self):
-        return f"<UserPoint User {self.user_id} Points {self.points}>"
 
     def save(self):
         db.session.add(self)
