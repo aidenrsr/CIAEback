@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 from werkzeug.wrappers import response
 from backend.models import UserBookInteraction, Chapter, Book, User, Responses
+from anthropic import Anthropic
 import openai
 import os
 
