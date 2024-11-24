@@ -78,7 +78,7 @@ def grade(response_text, chapter_content):
 def question(chapter_content):
     prompt = f"""Adopt a conversational tone and provide empathetic responses to connect deeply with the user's emotions.
 
-    You are being used for bibliotherapy, and your conversation topic is the book {book_title}.
+    You are being used for bibliotherapy, and your conversation topic is the book 잘못 뽑은 반장.
 
     The synopsis of the chapter is as follows:
     {chapter_content}
