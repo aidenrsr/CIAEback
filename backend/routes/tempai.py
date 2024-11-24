@@ -9,6 +9,7 @@ import os
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_KEY")
+claude_key = os.getenv("CLUADE_KEY")
 
 tempai_ns = Namespace("tempAI", description="Namespace for tempAI")
 
@@ -61,18 +62,26 @@ def grade(response_text, chapter_content):
 
         return the grades as integers in the format: identification, catharsis, insight.
     """
-
-    # Corrected OpenAI call
-    completion = openai.ChatCompletion.create(
-        model="gpt-4",  # Change model if necessary
-        messages=[
-            {"role": "system", "content": "you are an expert grader."},
-            {"role": "user", "content": prompt}
-        ]
+    
+    client = Anthropic(
+        api_key=claude_key
     )
-    output = completion['choices'][0]['message']['content'].strip()
 
+    response = client.messages.create(
+        model="claude-3-sonnet-20240229",  # Use the appropriate Claude model
+        system="You are a Korean School teacher",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        max_tokens=1024  # Adjust as needed
+    )
 
+    output = response.content[0].text.strip()
+
+ 
     grades = tuple(map(int, output.split(',')))
     
     return grades
@@ -111,15 +120,23 @@ def question(chapter_content):
     - Example empathetic statements: "That sounds really tough. I can see why you'd feel that way." or "It must have been overwhelming for you. It's completely understandable."
     """
 
-    # Corrected OpenAI call
-    response = openai.chat.completions.create(
-        model="gpt-4",  # Use the correct model
-        messages=[
-            {"role": "system", "content": "You are a Korean School teacher"},
-            {"role": "user", "content": prompt}
-        ]
+    client = Anthropic(
+        api_key=claude_key
     )
-    output = response.choices[0].message.content
+
+    response = client.messages.create(
+        model="claude-3-sonnet-20240229",  # Use the appropriate Claude model
+        system="You are a Korean School teacher",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        max_tokens=1024  # Adjust as needed
+    )
+
+    output = response.content[0]
 
     return output 
 
@@ -170,7 +187,7 @@ class ChapterStoreResource(Resource):
         data = request.get_json()
         new_response = Responses(response=data.get("response"))
         new_response.save()
-        return jsonify({"message": "Response Saved"}), 201
+        return jsonify(new_response)
 
 @tempai_ns.route("/Question/Init1")
 class Chapter1InitResource(Resource):
