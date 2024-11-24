@@ -14,7 +14,6 @@ colorama = "*"
 flask-cors = "*"
 gunicorn = "*"
 psycopg2 = "*"
-openai = "*"
 python-dotenv = "*"
 openai = "*"
 
