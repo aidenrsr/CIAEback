@@ -23,7 +23,6 @@ class User(db.Model):
 
     performance = db.relationship("UserPerformance", back_populates="user", cascade="all, delete-orphan")
     book_interactions = db.relationship("UserBookInteraction", back_populates="user")
-    game_scores = db.relationship("GameScore", back_populates="user")
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -326,12 +325,10 @@ class Comment(db.Model):
 
 class GameScore(db.Model):
 
-    __tablename_= "game_scores"
+    __tablename__ = "game_scores"
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     score = db.Column(db.Integer, nullable=False)
-
-    user = db.relationship("User", back_populates="game_scores")
 
     def __repr__(self):
         return f"<GameScore User {self.user_id}, Score {self.score}>"
