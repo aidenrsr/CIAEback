@@ -10,7 +10,7 @@ import os
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_KEY")
-claude_key = os.getenv("CLUADE_KEY")
+claude_key = os.getenv("CLAUDE_KEY")
 
 tempai_ns = Namespace("tempAI", description="Namespace for tempAI")
 
@@ -188,7 +188,7 @@ class ChapterStoreResource(Resource):
         data = request.get_json()
         new_response = Responses(response=data.get("response"))
         new_response.save()
-        return jsonify(new_response)
+        return new_response.to_dict(), 201
 
 @tempai_ns.route("/Question/Init1")
 class Chapter1InitResource(Resource):

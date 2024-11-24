@@ -312,3 +312,10 @@ class Responses(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+        # Add this method
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "response": self.response,
+        }
