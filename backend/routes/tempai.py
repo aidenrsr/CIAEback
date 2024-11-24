@@ -142,8 +142,6 @@ class Chapter1Resource(Resource):
         new_response = Responses(response=data.get("response"))
         new_response.save()
 
-
-
         return jsonify({question})
 
 @tempai_ns.route("/Question/Chapter2")
@@ -165,9 +163,15 @@ class Chapter2Resource(Resource):
 @tempai_ns.route("/Question/Init1")
 class Chapter1InitResource(Resource):
     def get(self):
-        return jsonify({"안녕! 만나서 반가워. 😊 로운이가 누나 때문에 소중한 망치를 잃었다고 느끼면서 억울함과 분노로 가득 차 있는데, 너도 혹시 비슷하게 누군가의 잘못으로 소중한 걸 잃었다고 느꼈던 순간이 있어? 그때 어떤 기분이 들었어?"})
+        response = {
+            "message": "안녕! 만나서 반가워. 😊 로운이가 누나 때문에 소중한 망치를 잃었다고 느끼면서 억울함과 분노로 가득 차 있는데, 너도 혹시 비슷하게 누군가의 잘못으로 소중한 걸 잃었다고 느꼈던 순간이 있어? 그때 어떤 기분이 들었어?"
+        }
+        return jsonify(response)
 
 @tempai_ns.route("/Question/Init2")
 class Chapter2InitResource(Resource):
     def get(self):
-        return jsonify({"안녕! 책은 재미있게 읽었어? 😊 로운이는 처음에 자신감이 넘치지만 친구들과 선생님이 자기를 무시하자 억울함과 분함을 느꼈잖아. 로운이가 이런 좌절감과 실망감을 느꼈을 때 어떤 감정이 들었을지 상상하니 어때? 혹시 너도 비슷한 상황에서 느껴본 적 있는지 궁금해!"})
+        response = {
+            "message": "안녕! 책은 재미있게 읽었어? 😊 로운이는 처음에 자신감이 넘치지만 친구들과 선생님이 자기를 무시하자 억울함과 분함을 느꼈잖아. 로운이가 이런 좌절감과 실망감을 느꼈을 때 어떤 감정이 들었을지 상상하니 어때? 혹시 너도 비슷한 상황에서 느껴본 적 있는지 궁금해!"
+        }
+        return jsonify(response)
