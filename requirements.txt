@@ -8,7 +8,7 @@ colorama
 flask-cors
 gunicorn
 werkzeug
-google-cloud-sql-connector
+cloud-sql-python-connector[postgresql]
 openai
 psycopg2-binary
 python-dotenv
