@@ -19,7 +19,20 @@ class User(db.Model):
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.Text(), nullable=False)
     points = db.Column(db.Integer(), nullable=False, default=0)
+    responses = db.Column(db.Text(), nullable=False, default="")
     created_at = db.Column(db.DateTime(), default=db.func.current_timestamp())
+
+    def updateResponse(self, new_response):
+        """
+        Appends a new response to the 'responses' field and commits the change to the database.
+
+        Args:
+            new_response (str): The new response text to add.
+        """
+        if self.responses:
+            self.responses += f"\n{new_response}"  # Add a newline before appending
+        
+        db.session.commit()  # Commit the changes to the database
 
     def __repr__(self):
         return f"<User {self.username}>"

@@ -134,7 +134,7 @@ class BookResource(Resource):
         book = Book.query.get_or_404(book_id)
         return book
 
-@books.route("books/<int:book_id>/chapters")
+@books.route("/books/<int:book_id>/chapters")
 class ChapterListResource(Resource):
 
     @books.marshal_list_with(chapter_model)
@@ -163,7 +163,7 @@ class ChapterListResource(Resource):
         return jsonify({"Chapter number: {chapter_number} for book id {book_id} has been created"}), 201
 
 
-@books.route("chapters/<int:chapter_id>")
+@books.route("/chapters/<int:chapter_id>")
 class ChapterResource(Resource):
     @books.marshal_with(chapter_model)
     def get(self, chapter_id):
@@ -182,7 +182,7 @@ class PageListResource(Resource):
         pages = Page.query.filter_by(book_id=book_id, chapter_id=chapter_id).all()
         return pages
 
-@books.route("chapters/<int:chapter_id>/pages")
+@books.route("/chapters/<int:chapter_id>/pages")
 class PagePostResource(Resource):
     @books.expect(page_model)
     def post(self, book_id, chapter_id):

@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from dotenv import load_dotenv
-from backend.models import UserBookInteraction, Chapter, Book
+from backend.models import UserBookInteraction, Chapter, Book, User
 import openai
 import os
 
@@ -169,6 +169,9 @@ class GradeResponse(Resource):
         data = request.get_json()
 
         response_grade = grade(data.get("Response"), content)
+
+        user = User.query.get(user_id)
+        user.updateResponse(data.get("Response"))
 
         result = [
             {

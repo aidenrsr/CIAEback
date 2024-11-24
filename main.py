@@ -32,14 +32,6 @@ api.add_namespace(community_ns)
 api.add_namespace(user_ns)
 api.add_namespace(game_score_ns)
 
-@app.route("/")
-def index():
-    return app.send_static_file("index.html")
-
-@app.errorhandler(404)
-def not_found(err):
-    return app.send_static_file("index.html")
-
 
 @app.shell_context_processor
 def make_shell_context():

@@ -12,7 +12,7 @@ class Config:
 
 class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DEV_DATABASE_URL", "postgresql+psycopg2://postgres:postgres@/flaskdb?host=/cloudsql/ciae-442621:asia-northeast3:ciae-back-dev"
+        "DEV_DATABASE_URL", "postgresql://postgres:postgres@34.64.82.153:5432/postgres"
     )
     DEBUG = True
 
