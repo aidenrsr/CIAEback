@@ -1,25 +1,52 @@
 from flask import request, jsonify
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.models import Thread, Post, Comment, User
 
 community_ns = Namespace("community", description="Namespace for Community board")
 
+thread_model = community_ns.model(
+    "thread",
+    {
+        "thread_id": fields.Integer(),
+        "title": fields.String(),
+        "book_id": fields.String()
+    }
+)
+
+post_model = community_ns.model(
+    "Post",
+    {
+        "id": fields.Integer(),
+        "thread_id": fields.Integer(),
+        "title": fields.String(),
+        "content": fields.String(),
+        "username": fields.String(),
+        "created_at": fields.DateTime()
+    }
+)
+
+comment_model = community_ns.model(
+    "Comment",
+    {
+        "id": fields.Integer(),
+        "username": fields.String(),
+        "content": fields.String(),
+        "created_at": fields.DateTime(),
+    }
+)
+
 # Thread
 @community_ns.route("/threads")
 class ThreadsResource(Resource):
     # to get all the threads(for starting page of community)
+    @community_ns.marshal_list_with(thread_model)
     def get(self):
         threads = Thread.query.all()
-        return jsonify([
-            {
-                "id": c.id,
-                "title": c.title,
-                "book_id": c.book_id
-            }
-            for c in threads
-        ]), 200
-
+        
+        return threads
+    
+    @community_ns.expect(thread_model)
     @jwt_required()
     # just to add new thread for new book
     def post(self):
@@ -38,22 +65,14 @@ class ThreadsResource(Resource):
 @community_ns.route("/threads/<int:thread_id>/posts")
 class PostResource(Resource):
     # this for single thread with all the posts
+    @community_ns.marshal_list_with(post_model)
     def get(self, thread_id):
         posts = Post.query.filter_by(thread_id=thread_id).order_by(Post.created_at.desc()).all()
 
-        result = [
-            {
-                "post_id": p.id,
-                "title": p.title,
-                "content": p.content,
-                "username": p.username,
-                "created_at": p.created_at
-            }
-            for p in posts]
-
-        return jsonify(result)
+        return posts
     
     # this is for new post in the thread
+    @community_ns.expect(post_model)
     @jwt_required()
     def post(self, thread_id):
         user_id = get_jwt_identity()
@@ -89,20 +108,13 @@ class PostDetailResource(Resource):
 @community_ns.route("/posts/<int:post_id>/comments")
 class CommentsResource(Resource):
     # get post's comments
+    @community_ns.marshal_list_with(comment_model)
     def get(self, post_id):
         comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.created_at.desc()).all()
 
-        result = [
-            {
-                "comment_id": c.id,
-                "content": c.content,
-                "username": c.username,
-                "created_at": c.created_at
-            } for c in comments]
-
-        return jsonify(result)
+        return comments
     
-
+    @community_ns.expect(comment_model)
     @jwt_required()
     def post(self, post_id):
         user_id = get_jwt_identity()
@@ -131,4 +143,3 @@ class CommentResource(Resource):
 
         comment.delete()
         return jsonify({"Comment deleted successfully"}), 200
-    

@@ -1,13 +1,23 @@
 from flask import jsonify, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.models import GameScore
 
 game_score_ns = Namespace("games", description="Game score")
 
+gamescore_model = game_score_ns.model(
+    "thread",
+    {
+        "score_id": fields.Integer(),
+        "user_id": fields.Integer(),
+        "score": fields.Integer()
+    }
+)
+
 @game_score_ns.route("/game_score")
 class HighestScoreResource(Resource):
     @jwt_required()
+    @game_score_ns.expect(gamescore_model)
     def put(self):
 
         user_id = get_jwt_identity()

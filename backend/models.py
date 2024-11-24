@@ -320,7 +320,7 @@ class GameScore(db.Model):
 
     __tablename__ = "gamescore"
 
-    score_id = db.Column(db.Integer, primary_key=True)
+    score_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
