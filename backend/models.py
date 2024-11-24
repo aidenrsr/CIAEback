@@ -21,16 +21,8 @@ class User(db.Model):
     points = db.Column(db.Integer(), nullable=False, default=0)
     created_at = db.Column(db.DateTime(), default=db.func.current_timestamp())
 
-    performance = db.relationship("UserPerformance", back_populates="user", cascade="all, delete-orphan")
-    book_interactions = db.relationship("UserBookInteraction", back_populates="user")
-
     def __repr__(self):
         return f"<User {self.username}>"
-
-    @classmethod
-    def get_performance(cls):
-        """ retuns user performance score """
-        return cls.performance
 
     def save(self):
         db.session.add(self)
@@ -50,7 +42,7 @@ class UserPerformance(db.Model):
     - score3: Integer
     """
 
-    __tablenane__ = "userperformances"
+    __tablename__ = "userperformances"
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     score1 = db.Column(db.Integer, nullable=False)
@@ -82,17 +74,8 @@ class Book(db.Model):
     author = db.Column(db.String(), nullable=False)
     num_pages = db.Column(db.Integer(), nullable=False)
 
-    # Relationship with chapters
-    chapters = db.relationship("Chapter", back_populates="book", cascade="all, delete-orphan")
-    user_interactions = db.relationship("UserBookInteraction", back_populates="book")
-
     def __repr__(self):
         return f"<Book {self.title} by {self.author}>"
-
-    @classmethod
-    def get_chapters(cls):
-        """ returns all chapters of the book """
-        return cls.chapters
 
     def save(self):
         db.session.add(self)
@@ -123,19 +106,8 @@ class Chapter(db.Model):
     end_page = db.Column(db.Integer, nullable=False)
     content = db.Column(db.Text, nullable=False)
 
-    # Relationship with book
-    book = db.relationship("Book", back_populates="chapters")
-
-    # Relationship with pages
-    pages = db.relationship("Page", back_populates="chapter", cascade="all, delete-orphan")
-
     def __repr__(self):
         return f"<Chapter {self.chapter_number} of Book {self.book_id}>"
-
-    @classmethod
-    def getpages(cls):
-        """ returns all pages of the chapter """
-        return cls.pages
 
     def save(self):
         db.session.add(self)
@@ -161,9 +133,6 @@ class Page(db.Model):
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"), nullable=False)
     page_number = db.Column(db.Integer, nullable=False)
     path_to_pdf = db.Column(db.String(80), nullable=False)
-
-    # Relationship with chapter
-    chapter = db.relationship("Chapter", back_populates="pages")
 
     def __repr__(self):
         return f"<Page {self.page_number} of Chapter {self.chapter_id}>"
@@ -199,34 +168,11 @@ class UserBookInteraction(db.Model):
     score2 = db.Column(db.Integer, nullable=False, default=0)
     score3 = db.Column(db.Integer, nullable=False, default=0)
 
-    user = db.relationship("User", back_populates="book_interactions")
-    book = db.relationship("Book", back_populates="user_interactions")
-
     def __repr__(self):
         return f"<BookUserInteraction User {self.user_id} - Book {self.book_id}: {self.progress}%>"
 
-    @classmethod
-    def get_user_books(cls, user_id):
-        """
-        Get all books a user has read or is reading, along with progress.
-        :param user_id: User ID
-        :return: List of books with progress
-        """
-        return cls.query.filter_by(user_id=user_id).all()
-
-    @classmethod
-    def get_book_info(cls, user_id, book_id):
-        """
-        Get the info of a user in a specific book.
-        :param user_id: User ID
-        :param book_id: Book ID
-        :return: Progress in percentage
-        """
-        interaction = cls.query.filter_by(user_id=user_id, book_id=book_id).first()
-        return interaction.progress if interaction else None
-
     def update(self, newScore1, newScore2, newScore3):
-        num_chapter = (self.book).get_chapters().scalar()
+        num_chapter = Chapter.query.filter_by(book_id=self.book_id).count()
         self.score1 = (self.progress*num_chapter*self.score1+newScore1)/(self.progress*num_chapter+1)
         self.score2 = (self.progress*num_chapter*self.score2+newScore2)/(self.progress*num_chapter+1)
         self.score3 = (self.progress*num_chapter*self.score3+newScore3)/(self.progress*num_chapter+1)

@@ -14,8 +14,7 @@ user_model = user_ns.model(
         "username": fields.String(),
         "email": fields.String(),
         "points": fields.Integer(),
-        "created_at": fields.DateTime(dt_format='iso8601'),
-        "performance": fields.Nested(interaction_model)
+        "created_at": fields.DateTime(dt_format='iso8601')
     }
 )
 
@@ -27,16 +26,7 @@ class UserProfileResource(Resource):
         user_id = get_jwt_identity()
         user = User.query.get_or_404(user_id)
 
-        user_profile = {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "created_at": user.created_at,
-            "points": user.get_points(),
-            "performance": user.get_performance()
-        }
-
-        return jsonify(user_profile), 200
+        return user
     
     
 

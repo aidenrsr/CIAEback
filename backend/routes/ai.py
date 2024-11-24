@@ -28,38 +28,31 @@ question_model = ai_ns.model(
     }
 )
 
-def grade(response_text, chapter_content, questiontype, question):
+def grade(response_text, chapter_content):
     # Grading scale table form
-    if questiontype == "Identification":
-        grading_scale_table = {
-            "Identification": [
-                (0, 19, "No connection to the character or personal experience"),
-                (20, 39, "Minimal connection to the character or personal experience"),
-                (40, 59, "Partial understanding of the character's experience or limited personal connection"),
-                (60, 79, "Moderate understanding of the character's experience and some personal connection"),
-                (80, 100, "Clear understanding of the character's experience and strong personal connection")
-            ]
-        }
-    elif type == "Catharsis":
-        grading_scale_table = {
-            "Catharsis": [
-                (0, 19, "Irrelevant response or no emotional engagement"),
-                (20, 39, "Minimal relevance or weak emotional engagement"),
-                (40, 59, "Somewhat relevant response with limited emotional reflection"),
-                (60, 79, "Moderately relevant response showing some emotional reflection"),
-                (80, 100, "Highly relevant response showing significant emotional reflection")
-            ]
-        }
-    elif type == "Insight":
-        grading_scale_table = {
-            "Insight": [
-                (0, 19, "Little to no reflection on experiences or application of learning"),
-                (20, 39, "Minimal reflection on experiences or application of learning"),
-                (40, 59, "Some reflection on experiences, but limited application of learning"),
-                (60, 79, "Moderate reflection and partial application of learning to new situations"),
-                (80, 100, "Thorough reflection and clear application of learning to new situations")
-            ]
-        }
+    grading_scale_table = {
+        "Identification": [
+            (0, 19, "No connection to the character or personal experience"),
+            (20, 39, "Minimal connection to the character or personal experience"),
+            (40, 59, "Partial understanding of the character's experience or limited personal connection"),
+            (60, 79, "Moderate understanding of the character's experience and some personal connection"),
+            (80, 100, "Clear understanding of the character's experience and strong personal connection")
+        ],
+        "Catharsis": [
+            (0, 19, "Irrelevant response or no emotional engagement"),
+            (20, 39, "Minimal relevance or weak emotional engagement"),
+            (40, 59, "Somewhat relevant response with limited emotional reflection"),
+            (60, 79, "Moderately relevant response showing some emotional reflection"),
+            (80, 100, "Highly relevant response showing significant emotional reflection")
+        ],
+        "Insight": [
+            (0, 19, "Little to no reflection on experiences or application of learning"),
+            (20, 39, "Minimal reflection on experiences or application of learning"),
+            (40, 59, "Some reflection on experiences, but limited application of learning"),
+            (60, 79, "Moderate reflection and partial application of learning to new situations"),
+            (80, 100, "Thorough reflection and clear application of learning to new situations")
+        ]
+    }
 
     grading_scale = "\n".join(
         f"{criterion}:\n" +
@@ -70,14 +63,11 @@ def grade(response_text, chapter_content, questiontype, question):
     # Promp needs to be adjusted
     prompt = f"""
         You are a grading assistant. Grade the following written response based on the criteria provided in the grading scale.
-        Reference the provided chapter content, and the question that was asked to evaluate the response appropriately.
+        Reference the provided chapter content to evaluate the response appropriately.
         Return three integers corresponding to the grades.
 
         Grading Scale:
         {grading_scale}
-
-        Question:
-        {question}
 
         Chapter Context:
         {chapter_content}
@@ -85,7 +75,7 @@ def grade(response_text, chapter_content, questiontype, question):
         Response to grade:
         "{response_text}"
 
-        Return the grades as an Integer
+        Return the grades as integers in the format: Identification, Catharsis, Insight.
     """
 
     completion = openai.ChatCompletion.create(
@@ -172,18 +162,25 @@ class GradeResponse(Resource):
         user_id = get_jwt_identity()
 
         toUpdate = UserBookInteraction.query.filter_by(user_id=user_id, book_id=book_id).first_or_404()
-        chapter = Chapter.query.filter_by(book_id=book_id, chapter_id=chapter_id).first_or_404()
+        chapter = Chapter.query.filter_by(book_id=book_id, chapter_id=chapter_id).first_or_404().content
         content = chapter.content
 
         # Request the response
         data = request.get_json()
 
-        response_grade = grade(data.get("response"), data.get("question"), data.get("question_type"), content)
+        response_grade = grade(data.get("Response"), content)
 
-        if data.get("question_type") == "Identification":
-            toUpdate.updateScore1(response_grade)
+        result = [
+            {
+                "IdentificationScore": response_grade[0],
+                "CatharsisScore": response_grade[1],
+                "InsightScore": response_grade[2],
+            }
+        ]
 
-        return jsonify({"Response successfully graded"})
+        toUpdate.update(response_grade[0], response_grade[1], response_grade[2])
+
+        return result
 
 @ai_ns.route("/Question/Book/<int:book_id>/Chapter/<int:chapter_id>")
 class QuestionResponse(Resource):
