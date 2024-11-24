@@ -137,10 +137,10 @@ class Chapter1Resource(Resource):
 
 로운은 자신이 일부러 잘못을 저지르려는 의도가 전혀 없었음에도 친구들과 선생님 모두가 자신을 문제아처럼 대하는 것이 억울하고 답답했다. 그날의 연이은 모욕과 좌절감은 로운의 마음에 더 깊은 상처를 남겼고, 자신이 고립되었다는 사실을 새삼스레 깨닫게 했다. 그럼에도 로운은 이를 후회하기보다는 자신을 방어하려는 마음으로 행동을 정당화하며, 외로운 분노와 혼란 속에서 개학 첫날을 마무리했다
 """
-        question = question(chapter_content)
+        new_question = question(chapter_content)
         result = [
             {
-                "question": question
+                "question": new_question
             }
         ]
         return jsonify(result)
@@ -154,10 +154,10 @@ class Chapter2Resource(Resource):
 수업이 끝난 뒤, 대광이와 함께 엉뚱한 반장 선거 출마 계획을 세우며 웃어 보였지만, 속으로는 자신도 새로운 시도를 해보고 싶다는 작은 기대감이 있었다. 반장 선거에서 한 표라도 얻으며 아이들 앞에서 당당히 설 수 있는 기회가 생길지 모른다는 생각에 설렜다. 그러나 현실적으로 자신이 뽑힐 리 없다는 걸 알면서도 친구와 함께 꾸민 계획은 잠시나마 위로가 되었다.
 
 집에 돌아온 로운은 엄마에게 반장 선거에 나가겠다고 했지만, 엄마마저 비웃으며 "망신만 당할 거 아니냐"고 말해 상처를 받았다. 방으로 들어가 문을 쾅 닫은 로운은 초콜릿을 꺼내 먹으며 억울한 마음과 좌절을 달래려 했다. 초콜릿의 달콤함은 짧은 위로를 주었지만, 로운은 학교에서도 집에서도 자신을 이해해 주는 사람이 없다는 외로움 속에서 하루를 마무리했다."""
-        question = question(chapter_content)
+        new_question = question(chapter_content)
         result = [
             {
-                "question": question
+                "question": new_question
             }
         ]
         return jsonify(result)
