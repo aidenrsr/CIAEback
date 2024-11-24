@@ -8,7 +8,7 @@ import openai
 import os
 
 load_dotenv()
-openai_api_key = os.getenv("OPENAI_KEY")
+openai.api_key = os.getenv("OPENAI_KEY")
 
 tempai_ns = Namespace("tempAI", description="Namespace for tempAI")
 
@@ -62,12 +62,14 @@ def grade(response_text, chapter_content):
         return the grades as integers in the format: identification, catharsis, insight.
     """
 
-    completion = openai.chatcompletion.create(
-        model="gpt-4o-mini-2024-07-18",
-        messages=[{"role": "system", "content": "you are an expert grader."},
-                  {"role": "user", "content": prompt}]
+    # Corrected OpenAI call
+    completion = openai.ChatCompletion.create(
+        model="gpt-4",  # Change model if necessary
+        messages=[
+            {"role": "system", "content": "you are an expert grader."},
+            {"role": "user", "content": prompt}
+        ]
     )
-
     output = completion['choices'][0]['message']['content'].strip()
 
 
@@ -78,7 +80,7 @@ def grade(response_text, chapter_content):
 def question(chapter_content):
     prompt = f"""Adopt a conversational tone and provide empathetic responses to connect deeply with the user's emotions.
 
-    You are being used for bibliotherapy, and your conversation topic is the book {book_title}.
+    You are being used for bibliotherapy, and your conversation topic is the book 잘못 뽑은 반장.
 
     The synopsis of the chapter is as follows:
     {chapter_content}
@@ -91,7 +93,7 @@ def question(chapter_content):
 
     Provide the output in the following format:
     ```
-    Question: [Insert question here]
+    [Insert question here]
     ```
 
     # Steps
@@ -111,18 +113,17 @@ def question(chapter_content):
     - Example empathetic statements: "That sounds really tough. I can see why you'd feel that way." or "It must have been overwhelming for you. It's completely understandable."
     """
 
-    completion = openai.ChatCompletion.create(
-        model="gpt-4o-mini-2024-07-18",
-        messages=[{"role": "system", "content": "You are an korean reading comprehension teacher"},
-                  {"role": "user", "content": prompt}]
+    # Corrected OpenAI call
+    response = openai.chat.completions.create(
+        model="gpt-4",  # Use the correct model
+        messages=[
+            {"role": "system", "content": "You are a Korean School teacher"},
+            {"role": "user", "content": prompt}
+        ]
     )
+    output = response.choices[0].message.content
 
-    output = completion['choices'][0]['message']['content'].strip()
-    
-    # Extracting the question and its type
-    question = output.split("Question: ")[1].split("\n")[0].strip()
-
-    return question 
+    return output 
 
 
 @tempai_ns.route("/Question/Chapter1/Get")
