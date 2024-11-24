@@ -167,7 +167,7 @@ class ChapterStoreResource(Resource):
         data = request.get_json()
         new_response = Responses(response=data.get("response"))
         new_response.save()
-        return jsonify({"Response Saved"})
+        return jsonify({"Response Saved"}), 201
 
 @tempai_ns.route("/Question/Init1")
 class Chapter1InitResource(Resource):
