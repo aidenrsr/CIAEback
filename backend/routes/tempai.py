@@ -163,9 +163,9 @@ class Chapter2Resource(Resource):
         return jsonify(result)
 
 @tempai_ns.route("/Question/Chapter/Store")
-class Chapter1StoreResource(Resource):
+class ChapterStoreResource(Resource):
     def post(self):
-        data = request.get_json
+        data = request.get_json()
         new_response = Responses(response=data.get("response"))
         new_response.save()
         return jsonify({"Response Saved"})
