@@ -300,10 +300,10 @@ class Responses(db.Model):
     __tablename__ = "responses"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    response = db.Column(db.Text, nullable=False)
+    response = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
-        return f"<Response {self.id}>"
+        return f"<Response {self.id}, Message {self.response}>"
 
     def save(self):
         db.session.add(self)

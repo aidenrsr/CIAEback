@@ -126,6 +126,9 @@ def question(chapter_content):
 
 @tempai_ns.route("/Question/Chapter1/Get")
 class Chapter1Resource(Resource):
+    def options(self):
+        return '', 204
+
     def get(self):
         chapter_content = """
         개학 첫날, 엄마가 누나를 스쿨버스 정류장까지 데려다주라고 하자, 로운은 누나와 함께 걸어야 한다는 것만으로도 짜증이 났다. 특히 과거에 누나가 키우던 개 망치가 차에 치여 죽은 일을 떠올리며, 허락 없이 망치를 데리고 나갔던 누나와 이를 방치한 엄마에게 억울함과 분노가 치밀어 올랐다.
