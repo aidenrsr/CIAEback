@@ -13,7 +13,6 @@ gamescore_model = game_score_ns.model(
 )
 
 
-
 @game_score_ns.route("/game_score")
 class GameScoreResource(Resource):
     @jwt_required()
@@ -28,7 +27,7 @@ class GameScoreResource(Resource):
 
     @jwt_required()
     @game_score_ns.expect(gamescore_model)
-    def put(self):
+    def post(self):
         user_id = get_jwt_identity()
         data = request.get_json()
 
@@ -40,10 +39,10 @@ class GameScoreResource(Resource):
             if new_score > current_score.score:
                 current_score.score = new_score
                 current_score.save()
-                return jsonify({"Score updated successfully", "Highscore": current_score.score}), 200
+                return jsonify({"Highscore": current_score.score}), 200
         else:
             new_entry = GameScore(user_id=user_id, score=new_score)
             new_entry.save()
-            return jsonify({"New high score created", "Highscore": new_score}), 201
+            return jsonify({"Highscore": new_score}), 201
 
         return jsonify({"message": "Score not updated", "Highscore": current_score.score}), 200
