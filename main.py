@@ -20,6 +20,8 @@ app = Flask(__name__)
 app.config.from_object(DevConfig)
 CORS(app)
 
+initialized = False
+
 db.init_app(app)
 
 api = Api(app, doc='/docs')
@@ -45,6 +47,14 @@ def make_shell_context():
         "UserPerformance": UserPerformance,
         "GameScore": GameScore
     }
+
+
+@app.before_request
+def create_tables():
+    global initialized
+    if not initialized:
+        db.create_all()
+        initialized = True
 
 
 if __name__ == "__main__":

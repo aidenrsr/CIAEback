@@ -12,6 +12,8 @@ class User(db.Model):
     - created_at: Date
     """
 
+    __tablename__ = "user"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(25), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
@@ -20,6 +22,7 @@ class User(db.Model):
     responses = db.Column(db.Text(), nullable=False, default="")
     created_at = db.Column(db.DateTime(), default=db.func.current_timestamp())
 
+    @classmethod
     def updateResponse(self, new_response):
         """
         Appends a new response to the 'responses' field and commits the change to the database.
@@ -29,10 +32,10 @@ class User(db.Model):
         """
         if self.responses:
             self.responses += f"\n{new_response}"  # Add a newline before appending
+        else:
+            self.responses = new_response  # Handle empty initial value
         
-        db.session.commit()  # Commit the changes to the database
-
-    def __repr__(self):
+        db.session.commit()  # Commit the changes to the database    def __repr__(self):
         return f"<User {self.username}>"
 
     def save(self):
@@ -52,6 +55,8 @@ class UserPerformance(db.Model):
     - score2: Integer
     - score3: Integer
     """
+
+    __tablename__ = "userperformances"
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     score1 = db.Column(db.Integer, nullable=False)
@@ -75,6 +80,8 @@ class Book(db.Model):
     - author: String
     - num_pages: Integer
     """
+
+    __tablename__ = "books"
 
     book_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(), nullable=False)
@@ -104,6 +111,8 @@ class Chapter(db.Model):
     - content: text
     """
 
+    __tablename__ = "chapters"
+
     chapter_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
     chapter_number = db.Column(db.Integer, nullable=False)
@@ -131,6 +140,8 @@ class Page(db.Model):
     - page_number: Integer
     - path_to_pdf: String
     """
+
+    __tablename__ = "pages"
 
     page_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     chapter_id = db.Column(db.Integer, db.ForeignKey("chapters.chapter_id"), nullable=False)
@@ -160,6 +171,8 @@ class UserBookInteraction(db.Model):
         score2:Integer
         score3:Integer
     """
+
+    __tablename__ = "userbookinteractions"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
@@ -192,6 +205,7 @@ class Thread(db.Model):
     """
     Thread Model
     """
+    __tablename__ = "threads"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.Text, nullable=False)
@@ -241,6 +255,8 @@ class Comment(db.Model):
     Comment Model:
     """
 
+    __tablename__ = "comments"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
     username = db.Column(db.Text, nullable=False)
@@ -261,6 +277,8 @@ class Comment(db.Model):
 
 
 class GameScore(db.Model):
+
+    __tablename__ = "gamescore"
 
     score_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
