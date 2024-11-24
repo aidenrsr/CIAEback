@@ -6,20 +6,29 @@ from backend.models import GameScore
 game_score_ns = Namespace("games", description="Game score")
 
 gamescore_model = game_score_ns.model(
-    "thread",
+    "Score",
     {
-        "score_id": fields.Integer(),
-        "user_id": fields.Integer(),
-        "score": fields.Integer()
+        "score": fields.Integer(required=True),
     }
 )
 
+
+
 @game_score_ns.route("/game_score")
-class HighestScoreResource(Resource):
+class GameScoreResource(Resource):
+    @jwt_required()
+    def get(self):
+        user_id = get_jwt_identity()
+        current_score = GameScore.query.filter_by(user_id=user_id).first()
+
+        if current_score:
+            return jsonify({"Highscore": current_score.score})
+        else:
+            return jsonify({"Highscore": 0})
+
     @jwt_required()
     @game_score_ns.expect(gamescore_model)
     def put(self):
-
         user_id = get_jwt_identity()
         data = request.get_json()
 
@@ -31,23 +40,10 @@ class HighestScoreResource(Resource):
             if new_score > current_score.score:
                 current_score.score = new_score
                 current_score.save()
-                
-                return jsonify({"score saved successfully"}), 200
-
+                return jsonify({"Score updated successfully", "Highscore": current_score.score}), 200
         else:
             new_entry = GameScore(user_id=user_id, score=new_score)
             new_entry.save()
+            return jsonify({"New high score created", "Highscore": new_score}), 201
 
-            return jsonify({"score added successfully"}), 201
-
-
-    @jwt_required()
-    def get(self):
-        user_id = get_jwt_identity()
-
-        current_score = GameScore.query.filter_by(user_id=user_id).first()
-
-        if current_score:
-            return jsonify({"Highscore": current_score.score})
-        else:
-            return jsonify({"no score"})
+        return jsonify({"message": "Score not updated", "Highscore": current_score.score}), 200
