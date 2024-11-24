@@ -1,10 +1,9 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import Thread, Post, Comment, User
-from ext import db
+from backend.models import Thread, Post, Comment, User
 
-community_ns = Namespace("community")
+community_ns = Namespace("community", description="Namespace for Community board")
 
 # Thread
 @community_ns.route("/threads")
@@ -50,7 +49,7 @@ class PostResource(Resource):
                 "username": p.username,
                 "created_at": p.created_at
             }
-                for p in posts]
+            for p in posts]
 
         return jsonify(result)
     
