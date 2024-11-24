@@ -16,6 +16,7 @@ gunicorn = "*"
 psycopg2 = "*"
 openai = "*"
 python-dotenv = "*"
+openai = "*"
 
 [dev-packages]
 
