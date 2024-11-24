@@ -125,10 +125,9 @@ def question(chapter_content):
     return question 
 
 
-@tempai_ns.route("/Question/Chapter1")
+@tempai_ns.route("/Question/Chapter1/Get")
 class Chapter1Resource(Resource):
     def get(self):
-        data = request.get_json
         chapter_content = """
         개학 첫날, 엄마가 누나를 스쿨버스 정류장까지 데려다주라고 하자, 로운은 누나와 함께 걸어야 한다는 것만으로도 짜증이 났다. 특히 과거에 누나가 키우던 개 망치가 차에 치여 죽은 일을 떠올리며, 허락 없이 망치를 데리고 나갔던 누나와 이를 방치한 엄마에게 억울함과 분노가 치밀어 올랐다.
 
@@ -138,10 +137,7 @@ class Chapter1Resource(Resource):
 
 로운은 자신이 일부러 잘못을 저지르려는 의도가 전혀 없었음에도 친구들과 선생님 모두가 자신을 문제아처럼 대하는 것이 억울하고 답답했다. 그날의 연이은 모욕과 좌절감은 로운의 마음에 더 깊은 상처를 남겼고, 자신이 고립되었다는 사실을 새삼스레 깨닫게 했다. 그럼에도 로운은 이를 후회하기보다는 자신을 방어하려는 마음으로 행동을 정당화하며, 외로운 분노와 혼란 속에서 개학 첫날을 마무리했다
 """
-        question = grade(data.get("response"), chapter_content)
-        new_response = Responses(response=data.get("response"))
-        new_response.save()
-
+        question = question(chapter_content)
         result = [
             {
                 "question": question
@@ -149,26 +145,30 @@ class Chapter1Resource(Resource):
         ]
         return jsonify(result)
 
-@tempai_ns.route("/Question/Chapter2")
+@tempai_ns.route("/Question/Chapter2/Get")
 class Chapter2Resource(Resource):
     def get(self):
-        data = request.get_json
         chapter_content = """
        개학 첫날, 로운은 선생님에게 "해로운"이라는 별명을 들으며 꾸중을 듣고, 친구들에게까지 놀림을 받으며 분노와 억울함을 느꼈다. 특히 제하가 일부러 약을 올리며 조롱하자 로운은 참을 수 없는 분노가 치밀었지만, 대광이가 말리고 선생님이 나타나면서 어쩔 수 없이 감정을 억눌렀다. 모든 사람들이 자신을 꼴통으로 취급하며 무시하는 듯한 분위기에 로운은 점점 더 좌절감을 느꼈다.
 
 수업이 끝난 뒤, 대광이와 함께 엉뚱한 반장 선거 출마 계획을 세우며 웃어 보였지만, 속으로는 자신도 새로운 시도를 해보고 싶다는 작은 기대감이 있었다. 반장 선거에서 한 표라도 얻으며 아이들 앞에서 당당히 설 수 있는 기회가 생길지 모른다는 생각에 설렜다. 그러나 현실적으로 자신이 뽑힐 리 없다는 걸 알면서도 친구와 함께 꾸민 계획은 잠시나마 위로가 되었다.
 
 집에 돌아온 로운은 엄마에게 반장 선거에 나가겠다고 했지만, 엄마마저 비웃으며 "망신만 당할 거 아니냐"고 말해 상처를 받았다. 방으로 들어가 문을 쾅 닫은 로운은 초콜릿을 꺼내 먹으며 억울한 마음과 좌절을 달래려 했다. 초콜릿의 달콤함은 짧은 위로를 주었지만, 로운은 학교에서도 집에서도 자신을 이해해 주는 사람이 없다는 외로움 속에서 하루를 마무리했다."""
-        question = grade(data.get("response"), chapter_content)
-        new_response = Responses(response=data.get("response"))
-        new_response.save()
-
+        question = question(chapter_content)
         result = [
             {
                 "question": question
             }
         ]
         return jsonify(result)
+
+@tempai_ns.route("/Question/Chapter/Store")
+class Chapter1StoreResource(Resource):
+    def post(self):
+        data = request.get_json
+        new_response = Responses(response=data.get("response"))
+        new_response.save()
+        return jsonify({"Response Saved"})
 
 @tempai_ns.route("/Question/Init1")
 class Chapter1InitResource(Resource):
@@ -185,3 +185,10 @@ class Chapter2InitResource(Resource):
             "message": "안녕! 책은 재미있게 읽었어? 😊 로운이는 처음에 자신감이 넘치지만 친구들과 선생님이 자기를 무시하자 억울함과 분함을 느꼈잖아. 로운이가 이런 좌절감과 실망감을 느꼈을 때 어떤 감정이 들었을지 상상하니 어때? 혹시 너도 비슷한 상황에서 느껴본 적 있는지 궁금해!"
         }
         return jsonify(response)
+
+@tempai_ns.route("Responses")
+class ResponseResource(Resource):
+    def get(self):
+        responses = Responses.query.all()
+        response_list = {{"id": response.id, "response": response.response} for response in responses}
+        return jsonify(response_list)
