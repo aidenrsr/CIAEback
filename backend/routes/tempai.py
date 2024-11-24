@@ -185,9 +185,13 @@ class Chapter2InitResource(Resource):
         }
         return jsonify(response)
 
-@tempai_ns.route("Responses")
+@tempai_ns.route("/Responses")
 class ResponseResource(Resource):
     def get(self):
         responses = Responses.query.all()
-        response_list = {{"id": response.id, "response": response.response} for response in responses}
+        
+        # Convert Responses objects to a list of dictionaries
+        response_list = [{"id": response.id, "response": response.response} for response in responses]
+        
+        # Return the serialized list as JSON
         return jsonify(response_list)
