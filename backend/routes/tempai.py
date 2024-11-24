@@ -93,7 +93,7 @@ def question(chapter_content):
 
     Provide the output in the following format:
     ```
-    Question: [Insert question here]
+    [Insert question here]
     ```
 
     # Steps
@@ -114,19 +114,16 @@ def question(chapter_content):
     """
 
     # Corrected OpenAI call
-    completion = openai.ChatCompletion.create(
-        model="gpt-4",  # Change model if necessary
+    response = openai.chat.completions.create(
+        model="gpt-4",  # Use the correct model
         messages=[
-            {"role": "system", "content": "you are an expert grader."},
+            {"role": "system", "content": "You are a Korean School teacher"},
             {"role": "user", "content": prompt}
         ]
     )
-    output = completion['choices'][0]['message']['content'].strip()
-    
-    # Extracting the question and its type
-    question = output.split("Question: ")[1].split("\n")[0].strip()
+    output = response.choices[0].message.content
 
-    return question 
+    return output 
 
 
 @tempai_ns.route("/Question/Chapter1/Get")
