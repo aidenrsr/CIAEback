@@ -175,7 +175,7 @@ class UserBookInteraction(db.Model):
     __tablename__ = "userbookinteractions"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=False)
     progress = db.Column(db.Float, nullable=False, default=0.0)
     score1 = db.Column(db.Integer, nullable=False, default=0)
