@@ -19,7 +19,7 @@ from backend.routes.score import game_score_ns
 
 app = Flask(__name__)
 app.config.from_object(DevConfig)
-CORS(app)
+CORS(app, origins=["http://localhost:3000", "*"])
 
 initialized = False
 
