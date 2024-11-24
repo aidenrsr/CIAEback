@@ -152,7 +152,7 @@ def question(book_title, chapter_content):
 
 
 
-@ai_ns.route("/Grade/Book/<int:book_id>/Chapter/<int:chapter_id>")
+@ai_ns.route("/Grade/Chapter/<int:chapter_id>")
 class GradeResponse(Resource):
     @ai_ns.expect(response_model)
     @jwt_required()
@@ -205,5 +205,4 @@ class QuestionResponse(Resource):
             "question": question_result,
             "question_type": question_type
         }
-
 

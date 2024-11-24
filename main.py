@@ -10,6 +10,7 @@ from backend.models import User, Book, Chapter, Page, UserBookInteraction, UserP
 
 from backend.auth import auth_ns
 from backend.routes.ai import ai_ns
+from backend.routes.tempai import tempai_ns
 from backend.routes.book import books
 from backend.routes.user import user_ns
 from backend.routes.community import community_ns
@@ -33,6 +34,7 @@ api.add_namespace(books)
 api.add_namespace(community_ns)
 api.add_namespace(user_ns)
 api.add_namespace(game_score_ns)
+api.add_namespace(tempai_ns)
 
 
 @app.shell_context_processor

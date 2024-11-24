@@ -294,3 +294,21 @@ class GameScore(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+class Responses(db.Model):
+    
+    __tablename__ = "responses"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    response = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f"<Response {self.id}>"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
