@@ -247,12 +247,10 @@ class Thread(db.Model):
     """
     __tablename__ = "threads"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.Text, nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey("books.book_id"), nullable=True)  # Optional link to a book
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    posts = db.relationship("Post", back_populates="thread")
 
     def __repr__(self):
         return f"<Thread {self.title}>"
@@ -273,15 +271,12 @@ class Post(db.Model):
     """
     __tablename__ = "posts"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     thread_id = db.Column(db.Integer, db.ForeignKey("threads.id"), nullable=False)
     title = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
     username = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-
-    thread = db.relationship("Thread", back_populates="posts")
-    comments = db.relationship("Comment", back_populates="post")
 
     def __repr__(self):
         return f"<Post {self.title}>"
@@ -302,14 +297,12 @@ class Comment(db.Model):
 
     __tablename__ = "comments"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
     username = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-
-    post = db.relationship("Post", back_populates="comments")
 
     def __repr__(self):
         return f"<Comment {self.content}>"
@@ -325,8 +318,9 @@ class Comment(db.Model):
 
 class GameScore(db.Model):
 
-    __tablename__ = "game_scores"
+    __tablename__ = "gamescore"
 
+    score_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     score = db.Column(db.Integer, nullable=False)
 

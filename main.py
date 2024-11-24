@@ -6,13 +6,14 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from backend.config import DevConfig
 from backend.ext import db
-from backend.models import User, Book, Chapter, Page, UserBookInteraction, UserPerformance, Page
+from backend.models import User, Book, Chapter, Page, UserBookInteraction, UserPerformance, Page, GameScore
 
 from backend.auth import auth_ns
 from backend.routes.ai import ai_ns
 from backend.routes.book import books
 from backend.routes.user import user_ns
 from backend.routes.community import community_ns
+from backend.routes.score import game_score_ns
 
 
 app = Flask(__name__)
@@ -29,6 +30,7 @@ api.add_namespace(ai_ns)
 api.add_namespace(books)
 api.add_namespace(community_ns)
 api.add_namespace(user_ns)
+api.add_namespace(game_score_ns)
 
 @app.route("/")
 def index():
@@ -48,7 +50,8 @@ def make_shell_context():
         "Chapter": Chapter,
         "Page": Page,
         "UserBookInteraction": UserBookInteraction,
-        "UserPerformance": UserPerformance
+        "UserPerformance": UserPerformance,
+        "GameScore": GameScore
     }
 
 
