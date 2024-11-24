@@ -91,10 +91,8 @@ def question(chapter_content):
 
     Ask **only one carefully crafted korean question** per response to help the user deeply reflect both on specific emotions the protagonist experiences, as well as their own similar or contrasting feelings. In addition to questions, be sure to respond empathetically in your reaction to their thoughts. Emphasize concrete, specific emotions rather than abstract ones.
 
-    Provide the output in the following format:
-    ```
-    [Insert question here]
-    ```
+    Provide the output in the format of one single Korean question, without any translations or additional questions.
+    The question should not exceed 150 characters. It question difficutly is meant for the average 4th grade korean elementary student
 
     # Steps
 
