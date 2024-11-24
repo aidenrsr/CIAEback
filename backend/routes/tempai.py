@@ -8,7 +8,7 @@ import openai
 import os
 
 load_dotenv()
-openai_api_key = os.getenv("OPENAI_KEY")
+openai.api_key = os.getenv("OPENAI_KEY")
 
 tempai_ns = Namespace("tempAI", description="Namespace for tempAI")
 
@@ -62,12 +62,14 @@ def grade(response_text, chapter_content):
         return the grades as integers in the format: identification, catharsis, insight.
     """
 
-    completion = openai.chatcompletion.create(
-        model="gpt-4o-mini-2024-07-18",
-        messages=[{"role": "system", "content": "you are an expert grader."},
-                  {"role": "user", "content": prompt}]
+    # Corrected OpenAI call
+    completion = openai.ChatCompletion.create(
+        model="gpt-4",  # Change model if necessary
+        messages=[
+            {"role": "system", "content": "you are an expert grader."},
+            {"role": "user", "content": prompt}
+        ]
     )
-
     output = completion['choices'][0]['message']['content'].strip()
 
 
@@ -111,12 +113,14 @@ def question(chapter_content):
     - Example empathetic statements: "That sounds really tough. I can see why you'd feel that way." or "It must have been overwhelming for you. It's completely understandable."
     """
 
+    # Corrected OpenAI call
     completion = openai.ChatCompletion.create(
-        model="gpt-4o-mini-2024-07-18",
-        messages=[{"role": "system", "content": "You are an korean reading comprehension teacher"},
-                  {"role": "user", "content": prompt}]
+        model="gpt-4",  # Change model if necessary
+        messages=[
+            {"role": "system", "content": "you are an expert grader."},
+            {"role": "user", "content": prompt}
+        ]
     )
-
     output = completion['choices'][0]['message']['content'].strip()
     
     # Extracting the question and its type
