@@ -173,19 +173,19 @@ class ChapterResource(Resource):
         return chapter
 
 
-@books.route("/books/<int:book_id>/chapters/<int:chapter_id>/pages")
+@books.route("/chapters/<int:chapter_id>/pages")
 class PageListResource(Resource):
     @books.marshal_list_with(page_model)
-    def get(self, book_id, chapter_id):
+    def get(self, chapter_id):
         """Gets the pages of a specific chapter of a specific book"""
 
-        pages = Page.query.filter_by(book_id=book_id, chapter_id=chapter_id).all()
+        pages = Page.query.filter_by(chapter_id=chapter_id).all()
         return pages
 
 @books.route("/chapters/<int:chapter_id>/pages")
 class PagePostResource(Resource):
     @books.expect(page_model)
-    def post(self, book_id, chapter_id):
+    def post(self, chapter_id):
         """Posts a page given the chapter and book id into the database"""
 
         data = request.get_json()
