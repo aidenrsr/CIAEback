@@ -2,7 +2,8 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from dotenv import load_dotenv
-from backend.models import UserBookInteraction, Chapter, Book, User
+from werkzeug.wrappers import response
+from backend.models import UserBookInteraction, Chapter, Book, User, Responses
 import openai
 import os
 
@@ -74,7 +75,7 @@ def grade(response_text, chapter_content):
     
     return grades
 
-def question(book_title, chapter_content):
+def question(chapter_content):
     prompt = f"""Adopt a conversational tone and provide empathetic responses to connect deeply with the user's emotions.
 
     You are being used for bibliotherapy, and your conversation topic is the book {book_title}.
@@ -138,6 +139,10 @@ class Chapter1Resource(Resource):
 로운은 자신이 일부러 잘못을 저지르려는 의도가 전혀 없었음에도 친구들과 선생님 모두가 자신을 문제아처럼 대하는 것이 억울하고 답답했다. 그날의 연이은 모욕과 좌절감은 로운의 마음에 더 깊은 상처를 남겼고, 자신이 고립되었다는 사실을 새삼스레 깨닫게 했다. 그럼에도 로운은 이를 후회하기보다는 자신을 방어하려는 마음으로 행동을 정당화하며, 외로운 분노와 혼란 속에서 개학 첫날을 마무리했다
 """
         question = grade(data.get("response"), chapter_content)
+        new_response = Responses(response=data.get("response"))
+        new_response.save()
+
+
 
         return jsonify({question})
 
@@ -152,6 +157,8 @@ class Chapter2Resource(Resource):
 
 집에 돌아온 로운은 엄마에게 반장 선거에 나가겠다고 했지만, 엄마마저 비웃으며 "망신만 당할 거 아니냐"고 말해 상처를 받았다. 방으로 들어가 문을 쾅 닫은 로운은 초콜릿을 꺼내 먹으며 억울한 마음과 좌절을 달래려 했다. 초콜릿의 달콤함은 짧은 위로를 주었지만, 로운은 학교에서도 집에서도 자신을 이해해 주는 사람이 없다는 외로움 속에서 하루를 마무리했다."""
         question = grade(data.get("response"), chapter_content)
+        new_response = Responses(response=data.get("response"))
+        new_response.save()
 
         return jsonify({question})
 
